@@ -1,0 +1,64 @@
+---
+title: "Controls"
+author: "Tom Mushkat"
+date: "7/29/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning=FALSE, message=FALSE}
+Data$Condition <- ifelse(is.na(Data$Know) == T, 'knowCondition', 'dontKnowCondition')
+
+# Data <- Data %>% 
+#   mutate(dontKnow = as.numeric(ifelse(dontKnowFirst == '1 (False)', 1, 
+#                                 ifelse(dontKnowFirst == '7 (True)', 7, dontKnowFirst))),
+#          Know1 = as.numeric(ifelse(Know == '1 (False)', 1, 
+#                                 ifelse(Know == '7 (True)', 7, Know))),
+#          DV = ifelse(is.na(Know1) == T, dontKnow, Know1))
+```
+
+# 
+
+```{r, warning=FALSE, message=FALSE}
+Data$DV1 <- rowSums(cbind(Data$`allPluse2[, 2]`, Data$`allPluse2[, 3]`, Data$`allPluse2[, 4]`,
+                          Data$`allPluse2[, 5]`, Data$`allPluse2[, 6]`, Data$`allPluse2[, 7]`)) / 6
+Data$DV2 <- ifelse(Data$`allPluse2[, 2]` == 0 | Data$`allPluse2[, 3]` == 0 | Data$`allPluse2[, 4]` == 0 |
+                          Data$`allPluse2[, 5]` == 0 | Data$`allPluse2[, 6]` == 0 | Data$`allPluse2[, 7]` == 0, 'dontConfirm', 'Confirm')
+# Data <- Data %>% 
+#   mutate(dontKnow = as.numeric(ifelse(dontKnowFirst == '1 (False)', 1, 
+#                                 ifelse(dontKnowFirst == '7 (True)', 7, dontKnowFirst))),
+#          Know1 = as.numeric(ifelse(Know == '1 (False)', 1, 
+#                                 ifelse(Know == '7 (True)', 7, Know))),
+#          DV = ifelse(is.na(Know1) == T, dontKnow, Know1))
+```
+
+
+# Intellectual humility
+```{r, warning=FALSE, message=FALSE}
+
+Data$R_Intellectualhumility_DO_Q275 <- 8 - Data$Intellectualhumility_DO_Q275
+Data$R_Intellectualhumility_DO_Q279 <- 8 - Data$Intellectualhumility_DO_Q279
+Data$R_Intellectualhumility_DO_Q280 <- 8 - Data$Intellectualhumility_DO_Q280
+
+
+Intelectual <- as.matrix(cbind(cbind(Data$R_Intellectualhumility_DO_Q275,
+                                     Data$Intellectualhumility_DO_Q276,
+                                     Data$Intellectualhumility_DO_Q277,
+                                     Data$Intellectualhumility_DO_Q278,
+                                     Data$R_Intellectualhumility_DO_Q279,
+                                     Data$R_Intellectualhumility_DO_Q280)))
+psych::alpha(Intelectual)
+
+Data$intellectualhumility <- rowMeans(cbind(Data$R_Intellectualhumility_DO_Q275,
+                                     Data$Intellectualhumility_DO_Q276,
+                                     Data$Intellectualhumility_DO_Q277,
+                                     Data$Intellectualhumility_DO_Q278,
+                                     Data$R_Intellectualhumility_DO_Q279,
+                                     Data$R_Intellectualhumility_DO_Q280))
+```
+
+
+

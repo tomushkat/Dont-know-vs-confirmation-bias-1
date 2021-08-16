@@ -1,0 +1,80 @@
+---
+title: "Hypothesis"
+author: "Tom Mushkat"
+date: "8/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning=FALSE, message=FALSE}
+Data %>% 
+  ggplot(aes(x = DV1)) + 
+  geom_histogram() + 
+  facet_grid(~Condition) + 
+  xlab('Rate of confirming') + ylab('Frequency')
+
+Data %>% 
+  group_by(Condition) %>% 
+  summarise(Mean = round(mean(DV1), 2),
+            SD   = round(sd(DV1), 2),
+            Median = round(median(DV1), 2),
+            N = length(DV1))
+
+# varTest <- var.test(DV1 ~ Condition, data = Data)
+# trueVarTest <- ifelse(varTest$p.value > 0.05, TRUE, FALSE)
+# Model <- t.test(DV1 ~ Condition, var.equal = trueVarTest, data = Data)
+# Model
+wilcox.test(DV1 ~ Condition, data = Data)
+# effectsize(Model)
+
+boxplot(Data$DV1 ~ Data$Condition,
+  ylab = "Rate of confirming",
+  main = 'Condition'
+)
+
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+CrossTable(Data$DV2, Data$Condition, chisq = T, format = 'SPSS')
+```
+
+```{r, warning=FALSE, message=FALSE}
+dataDontKnwo <- Data %>%
+  filter(FL_5_DO_Dontknow == 1) %>%
+  mutate(newCondition = ifelse(dontKnowFirst == "I don't know", 'dontKnow', 'Know'))
+
+dataDontKnwo %>% 
+  ggplot(aes(x = DV1)) + 
+  geom_histogram() + 
+  facet_grid(~newCondition) + 
+  xlab('Rate of confirming') + ylab('Frequency')
+
+dataDontKnwo %>% 
+  group_by(newCondition) %>% 
+  summarise(Mean = round(mean(DV1), 2),
+            SD   = round(sd(DV1), 2),
+            Median = round(median(DV1), 2),
+            N = length(DV1))
+
+# varTest <- var.test(DV1 ~ Condition, data = Data)
+# trueVarTest <- ifelse(varTest$p.value > 0.05, TRUE, FALSE)
+# Model <- t.test(DV1 ~ Condition, var.equal = trueVarTest, data = Data)
+# Model
+wilcox.test(DV1 ~ newCondition, data = dataDontKnwo)
+# effectsize(Model)
+
+boxplot(dataDontKnwo$DV1 ~ dataDontKnwo$newCondition,
+  ylab = "Rate of confirming",
+  main = 'Condition'
+)
+
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+CrossTable(dataDontKnwo$DV2, dataDontKnwo$newCondition, chisq = T, format = 'SPSS')
+```

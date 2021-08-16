@@ -1,0 +1,57 @@
+---
+title: "Data and libraries"
+author: "Tom Mushkat"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  html_document:
+    code_folding: hide
+    df_print: kable
+    results: hide
+    theme: readable
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning=FALSE, message=FALSE}
+pacman::p_load(tidyverse, here, skimr, anytime, car, effectsize, gmodels, apaTables, psych, rcompanion, ResourceSelection, lmtest, faraway, estimatr, tidymodels, hdm)
+
+continuousOutliers <- function(data, lowerBound = 3, upperBound = 3){
+  
+  # This function takes a vector, and replace observations that are smaller or bigger than the lower/upper bounds * standard deviations with NA
+  
+  Mean   <- mean(data, na.rm = TRUE)
+  SD     <- sd(data, na.rm = TRUE)
+  High   <- Mean + upperBound * SD # Upper Range  
+  Low    <- Mean - lowerBound * SD # Lower Range
+  Final  <- ifelse(data > High | data < Low, NA, data)
+  
+  return(Final)
+  
+}
+
+#   Male <- read_csv(here('Data/male.csv'))
+#   Female <- read_csv(here('Data/female.csv'))
+# 
+# Male1 <- Male[3:nrow(Male), ]
+# Male2 <- Male1 %>%
+#   drop_na(ID)
+# 
+# Female1 <- Female[3:nrow(Female), ]
+# Female2 <- Female1 %>%
+#   drop_na(ID)
+# 
+#  originalData <- rbind(Male2, Female2)
+
+# write.csv(Data, 'cleanDataUpdated.csv')
+# Data <- read_csv(here('Data/cleanDataUpdated.csv'))
+Data <- read_csv(here('Data/cleanData.csv'))
+# Data <- Data %>% 
+#   filter(Sex == 'Female')
+Data$cleanDuration <- continuousOutliers(Data$Duration)
+Data <- Data %>% 
+  filter(Unclear == 'Clear')
+```
